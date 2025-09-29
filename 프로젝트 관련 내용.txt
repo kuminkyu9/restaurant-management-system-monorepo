@@ -7,6 +7,10 @@ restaurant-management-system/
 └──  프로젝트 관련 내용.txt
 
 
+prisma 띄울 때 순서가 compose.yml 을 최상위 폴더인 restaurant-management-system에 해서 거기로 이동한다음 docker compose up -d 명령어 실행
+명령어 전 docker desktop 켜논상태여야 됌
+그 후 backend 폴더에서 npx prisma studio 실행 하면 gui 툴 뜸 
+
 
 
 restaurant-operations-web	(레스토랑 운영 관리)	==	사장, 손님		(웹	react)			qr 정보에는 상점id, 테이블 번호 등, 각 상점 별로 테이블 별 qr 생성 가능
@@ -26,13 +30,55 @@ restaurantStaffApp	(레스토랑 직원)			==	직원			(앱	react_native)
 	reactNative는 컴포넌트는 파스칼 딴거는 왠만하면 카멜케이스?
 
 
+//
+프로젝트 사용 기술 및 기술별 역할 정리
+한 줄 요약:  프런트는 화면과 상호작용, 백엔드는 비즈니스 로직과 API, DB는 영속 데이터, 소켓은 실시간 통신, 배포는 실행·호스팅을 맡고, 로컬 Docker는 개발용 인프라(특히 DB)를 손쉽게 띄우는 데 쓴다.
+
+프런트엔드
+React: 웹 관리자/고객용 화면을 구성하고 상태관리, 라우팅, API 호출로 백엔드와 연동한다. 빌드 후 정적 자산으로 배포된다.
+React Native: 직원용 모바일 앱 UI/네이티브 브리지로 기능을 제공하고, 백엔드 API·소켓과 통신한다.
+
+백엔드
+Node.js/Express: 주문 생성/조회/승인 등 비즈니스 로직과 REST API 라우팅을 담당한다. 인증, 권한, 검증, 로깅, /health 같은 헬스 체크 엔드포인트를 제공한다.
+
+데이터베이스
+PostgreSQL: 주문·메뉴·테이블·직원 등 핵심 데이터를 영속 저장한다. 트랜잭션, 인덱스, 관계 모델로 정합성과 성능을 보장한다.
+Prisma: 스키마 정의(prisma/schema.prisma), 마이그레이션(migrate), 타입 안전한 ORM 쿼리로 DB 접근을 단순화한다. 초기화(init), 마이그레이션 배포(deploy), 시드(seed)에 사용한다.
+
+실시간 통신
+Socket.IO: 주문 생성/상태 변경, 알림, 주방/홀 모니터링을 실시간 이벤트로 전달한다. 연결 유지, 재연결, 네임스페이스/룸, 인증 토큰 연동 등을 처리한다.
+
+배포/호스팅
+Vercel(프런트): 프런트엔드 정적/서버 기능(프로젝트에 따라)을 자동 빌드·캐시·CDN 배포한다. 커밋 트리거로 미리보기/프로덕션 배포를 제공한다.
+Render(백엔드): Express/Socket.IO 서버를 지속 실행하고 환경변수, 로그, 스케일링, 헬스체크, 배포 훅(프리-디플로이에서 prisma migrate deploy 등)을 관리한다. 관리형 Postgres도 선택 가능하다.
+
+로컬 개발 인프라
+Docker(로컬): 개발 머신에 Postgres(필요 시 Redis)를 컨테이너로 띄워 설치 없이 동일한 환경을 재현한다. 
+docker-compose로 DB → API 순서 의존성, 볼륨(데이터 보존), 포트 매핑을 선언적으로 관리한다. Prisma init/migrate/seed와 /health 확인을 로컬에서 일관되게 수행한다.
+
+연결 관계 요약
+프런트(React/React Native) → 백엔드(Express)로 HTTP(API)와 WebSocket(Socket.IO) 요청을 보낸다.
+백엔드(Express/Socket.IO) ↔ PostgreSQL로 Prisma를 통해 읽기/쓰기한다.
+로컬에서는 Docker 컨테이너의 Postgres에 연결해 개발/테스트하고, 프로덕션에서는 Render의 서비스/DB로 전환한다.
+배포는 프런트는 Vercel, 백엔드는 Render가 담당하며, 도메인/SSL/스케일링 등 운영 편의 기능을 제공한다.
+//
+
+
+프론트엔드(React, React Native), 
+백엔드(Node.js/Express), 
+데이터베이스(PostgreSQL), 
+실시간 통신(Socket.IO), 
+배포(Render/Vercel)로 구성된 웹 애플리케이션 아키텍처이다. 각 컴포넌트는 HTTP API와 웹소켓 이벤트로 연결되고, 설정은 환경 변수로 관리한다.
+
+	Vercel은 무료 웹 배포, Render은 무료 서버 배포 (백엔드/소켓 서버)(데이터베이스는 Render의 매니지드 Postgres 같은 별도 DB 서비스로 생성해 연결)
 
 
 
-
-
-
-
+vercel은 websocket 이 안됌 공식 문서적으로
+>>
+Vercel은 WebSocket 연결을 직접 지원하지 않으므로, Node.js 서버에서 Express와 Socket.IO를 사용하여 백엔드를 구축하고,
+Render 또는 Railway와 같은 PaaS(Platform as a Service)에 배포해야 합니다. 
+프론트엔드는 Vercel에 배포한 후, 백엔드 서버의 Socket.IO 엔드포인트에 wss:// 또는 ws:// 프로토콜을 사용하여 연결합니다. 
 
 
 

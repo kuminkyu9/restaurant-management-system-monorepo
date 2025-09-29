@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    container_name: rms-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: rms
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rms"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+volumes:
+  postgres-data:
+
+
+# cd desktop/restaurant-management-system
+# docker-compose up -d
