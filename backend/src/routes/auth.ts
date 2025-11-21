@@ -11,7 +11,7 @@ const router = Router();
 
 router.post("/signup", async (req, res, next) => {
     try {
-        const body = signupSchema.parse(req.body);
+        const body = signupSchema.parse(req.body);  // zod 체크 
         const user = await signup(body);
         res.status(201).json({ status: "ok", data: user });
     } catch (err: any) {

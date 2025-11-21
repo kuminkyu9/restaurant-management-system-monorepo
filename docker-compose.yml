@@ -22,4 +22,5 @@ volumes:
 
 
 # cd desktop/restaurant-management-system
-# docker-compose up -d
+# docker compose up -d
+# docker compuse down

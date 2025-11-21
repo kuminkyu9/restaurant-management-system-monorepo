@@ -16,8 +16,8 @@ const SALT_ROUNDS = 12;
 
 export async function signup(data: { email: string; password: string; name?: string; role?: "OWNER" | "STAFF" }) {
     const exists = await prisma.user.findUnique({ where: { email: data.email } });
-    if (exists) throw { status: 409, message: "Email already registered" };
-    const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
+    if (exists) throw { status: 409, message: "Email already registered" }; // 이메일 중복 방지
+    const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS); // 비밀번호 해싱
     const user = await prisma.user.create({
         data: { email: data.email, name: data.name, role: data.role ?? "STAFF", passwordHash },
         select: { id: true, email: true, name: true, role: true, createdAt: true },
