@@ -7,6 +7,12 @@ restaurant-management-system/
 └──  프로젝트 관련 내용.txt
 
 
+commit rule
+	- 직원용 앱일 경우 	> [app]
+	- 사장 관리 웹일 경우 	> [web:사장]
+	- 손님 주문 웹일 경우	> [web:손님]		
+
+
 prisma 띄울 때 순서가 compose.yml 을 최상위 폴더인 restaurant-management-system에 해서 거기로 이동한다음 docker compose up -d 명령어 실행
 명령어 전 docker desktop 켜논상태여야 됌
 그 후 backend 폴더에서 npx prisma studio 실행 하면 gui 툴 뜸 

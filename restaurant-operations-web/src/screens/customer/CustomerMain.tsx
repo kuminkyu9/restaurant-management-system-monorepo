@@ -1,10 +1,10 @@
-
-// import '../../index.css' 절대경로@ 이거는 설정해야됌
+import {MenuListItem} from "@/screens/customer/MenuListItem"
 
 function CustomerMain() {
     return (
         <>
             <div>CustomerMain</div>
+            <MenuListItem />
         </>
     )
 }
